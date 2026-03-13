@@ -1,37 +1,36 @@
 # Shelby Price Predictor 🚀📈
 
-Dự án này là một ứng dụng minh họa (Proof of Concept) về cách thức tạo ra dữ liệu dự đoán giá tiền điện tử (Crypto Price Predictions) và đăng tải, lưu trữ dữ liệu JSON đó lên mạng phân tán **Shelby Protocol**.
+This project is a Proof of Concept (PoC) demonstrating how to generate Crypto Price Predictions and securely upload and store that JSON data onto the decentralized **Shelby Protocol** network.
 
-## 🧐 Ý tưởng dự án
-- Mô phỏng một mô hình tính toán định lượng (`Quant Model`) nhằm dự báo xu hướng giá tài sản (APT, BTC, ETH...) trong vòng 24H.
-- Gói gọn kết quả trả về của cấu trúc dữ liệu JSON.
-- Đóng gói file JSON này thành cục dữ liệu blob, định thời gian hết hạn (expiration time: 30 ngày) và upload trực tiếp lên Storage Providers thông qua hạ tầng [Shelby Network](https://docs.shelby.xyz/protocol).
+## 🧐 Project Idea
+- Simulates a Quantitative Calculation Model (`Quant Model`) to forecast the price trends for assets (APT, BTC, ETH...) over the next 24H.
+- Encapsulates the results within a JSON data structure.
+- Packages this JSON file into a data blob, sets an expiration time, and directly uploads it to Storage Providers via the [Shelby Network](https://docs.shelby.xyz/protocol).
 
-## 🛠️ Cài đặt & Chạy ứng dụng
+## 🛠️ Installation & Execution
 
-1. **Yêu cầu hệ thống:**
+1. **System Requirements:**
    - Node.js version 18+
 
-2. **Cài đặt Dependency:**
+2. **Install Dependencies:**
    ```bash
    npm install
    ```
 
-3. **Chạy kịch bản sinh dữ liệu (Dry-run mode):**
-   Mặc định script chỉ tạo dữ liệu giả lập và lưu vào thư mục `data/` trong máy bạn để bạn hình dung ra kết quả.
+3. **Run Data Generation Script:**
+   By default, the script generates mock data and saves it in the local `data/` folder so you can visualize the output.
    ```bash
    npm start
    ```
 
-## 🌐 Lưu trữ vĩnh viễn dữ liệu trên Shelby
-Khi bạn đã sẵn sàng upload dữ liệu thực tế lên Shelby Network Testnet:
+## 🌐 Storing Data Permanently on Shelby
+Once you're ready to upload real data to the Shelby Network Testnet:
 
-1. Đăng ký nhận **[API Key](https://docs.shelby.xyz/sdks/typescript/acquire-api-keys)**.
-2. Nạp thêm Aptos (Testnet) làm phí gas qua **[Aptos Faucet](https://aptos.dev/network/faucet)** và ShelbyUSD qua Discord của hệ thống.
-3. Mở tệp `src/index.ts`.
-4. Điền Token Account hợp lệ và **BỎ COMMENT (Ctrl + /)** đoạn mã gọi hàm `shelbyClient.upload()`.
-5. Chạy lại dự án bằng `npm start`. Dữ liệu sẽ chính thức được bất biến (immutable) trên mạng lưới Blockchain phi tập trung của dự án Shelby trong vòng 30 ngày tới.
+1. Register and acquire an **[API Key](https://docs.shelby.xyz/sdks/typescript/acquire-api-keys)**.
+2. Fund your Aptos (Testnet) wallet with gas via the **[Aptos Faucet](https://aptos.dev/network/faucet)** and acquire ShelbyUSD from the project's Discord channel.
+3. Open `src/index.ts`.
+4. Run the project with `npm start` utilizing a properly funded account. The data will become immutable on the Shelby Decentralized Storage network.
 
-## Tìm hiểu công nghệ đằng sau
+## Underlying Technologies
 - 📘 [Aptos Blockchain SDK](https://github.com/aptos-labs/aptos-ts-sdk)
 - 📘 [Shelby Typescript SDK](https://docs.shelby.xyz/sdks/typescript)

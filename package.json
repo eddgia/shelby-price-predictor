@@ -2,9 +2,10 @@
   "name": "shelby-price-predictor",
   "version": "1.0.0",
   "description": "A demo project that generates price predictions and stores them securely on the Shelby Protocol.",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "ts-node --esm src/index.ts",
     "build": "tsc"
   },
   "dependencies": {

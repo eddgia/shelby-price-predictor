@@ -3,16 +3,16 @@ import { ShelbyNodeClient } from "@shelby-protocol/sdk/node";
 import fs from "fs/promises";
 import path from "path";
 
-// Tham số giả lập dự đoán (Simulated Prediction Model)
+// Simulated Prediction Model
 function generatePredictionData(assets: string[]) {
   const predictions: any = {};
   const now = new Date();
   
   assets.forEach(asset => {
-    // Giả lập giá hiện tại (Randomized baseline)
+    // Randomized baseline current price
     const basePrice = Math.random() * 1000 + 50; 
     
-    // Dự đoán xu hướng giá (Volatility +- 5%)
+    // Forecast price trend (Volatility +- 5%)
     const volatility = (Math.random() - 0.5) * 0.1;
     const predictedPrice = basePrice * (1 + volatility);
     
@@ -33,62 +33,66 @@ function generatePredictionData(assets: string[]) {
 }
 
 async function main() {
-  console.log("🚀 Bắt đầu quá trình tạo và lưu trữ dự đoán giá lên Shelby Protocol...\n");
+  console.log("🚀 Starting the process of generating and storing price predictions on the Shelby Protocol...\n");
 
   const assets = ["APT", "BTC", "ETH", "SOL", "SUI"];
   const predictionData = generatePredictionData(assets);
   
-  // 1. Tạo file dự đoán cục bộ
-  const dataDir = path.join(__dirname, "../data");
+  // 1. Create a local prediction file
+  const __dirname = path.resolve();
+  const dataDir = path.join(__dirname, "data");
   await fs.mkdir(dataDir, { recursive: true });
   
   const fileName = `predictions-${Date.now()}.json`;
   const filePath = path.join(dataDir, fileName);
   await fs.writeFile(filePath, JSON.stringify(predictionData, null, 2));
   
-  console.log(`✅ Đã tạo file dự đoán tại: ${filePath}`);
-  console.log("Xem trước dữ liệu:");
+  console.log(`✅ Created prediction file at: ${filePath}`);
+  console.log("Data preview:");
   console.log(predictionData);
   console.log("\n-----------------------------------------------\n");
 
-  // 2. Thiết lập cấu hình Shelby Client
-  // LƯU Ý: ĐÂY QUAN TRỌNG
-  console.log("⚠️ CHÚ Ý QUAN TRỌNG ĐỂ UPLOAD LÊN MẠNG SHELBY:");
-  console.log("Để thực sự lưu trữ cục dữ liệu JSON này lên Shelby Network, bạn cần:");
-  console.log("  1) Một ví Aptos Testnet Account có chứa Testnet APT (gas fee).");
-  console.log("  2) Ví đó phải có Testnet ShelbyUSD (upload fee).");
-  console.log("  3) Một API Key hợp lệ từ Aptos/Shelby Protocol.");
-  console.log("\nVì đây là dự án demo (Quickstart/Template), chức năng upload đang được đóng gói sẵn dưới dạng comment (vô hiệu hóa tạm thời) để tránh lỗi thi hành khi bạn chưa cung cấp token.\n");
+  // 2. Setup Shelby Client Configuration
+  // NOTE: THIS IS IMPORTANT
+  console.log("⚠️ IMPORTANT NOTICE FOR UPLOADING TO SHELBY NETWORK:");
+  console.log("To actually store this JSON data onto the Shelby Network, you need:");
+  console.log("  1) An Aptos Testnet Account with Testnet APT (gas fee).");
+  console.log("  2) That wallet must also have Testnet ShelbyUSD (upload fee).");
+  console.log("  3) A valid API Key from Aptos/Shelby Protocol.");
+  console.log("\nSince this is a demo project, make sure these requirements are met before deployment.\n");
 
-  /*
-  // --- BỎ COMMENT PHẦN DƯỚI ĐÂY KHI BẠN ĐÃ SẴN SÀNG ---
+  // --- UNCOMMENT THE BELOW SECTION WHEN YOU ARE READY ---
   
-  // Tạo tài khoản hoặc nạp tài khoản đã có (import private key)
-  const account = Account.generate(); 
-  // const account = new Ed25519Account({ privateKey: new Ed25519PrivateKey("YOUR_PRIVATE_KEY") });
+  // Create account or load existing account (import private key)
+  // [WARNING] DO NOT Hardcode your seed phrase/private key in the codebase for production!
+  const mnemonic = "YOUR_SEED_PHRASE_HERE_OR_ENV_VARIABLE"; 
+  // const account = Account.fromDerivationPath({ path: "m/44'/637'/0'/0'/0'", mnemonic });
+  const account = Account.generate(); // Temporary auto-generate account to avoid crash
   
-  console.log("Generated Account Address:", account.accountAddress.toString());
+  console.log("Using account address:", account.accountAddress.toString());
 
+  // Configure Shelby Testnet (Shelbynet) Network
   const config = {
     network: Network.TESTNET,
-    apiKey: "YOUR_API_KEY_HERE", 
   };
 
   const shelbyClient = new ShelbyNodeClient(config);
   const blobData = await fs.readFile(filePath);
 
-  console.log("⏳ Đang tải dữ liệu dự đoán lên Shelby...");
-  await shelbyClient.upload({
-    account,
-    blobData,
-    blobName: `price-predictions/${fileName}`,
-    expirationMicros: (1000 * 60 * 60 * 24 * 30 + Date.now()) * 1000, // Gia hạn lưu trữ 30 ngày
-  });
-
-  console.log("🎉 Upload thành công lên hạ tầng Decentralized Storage của Shelby!");
-  */
+  console.log("⏳ Uploading prediction data to Shelby...");
+  try {
+    await shelbyClient.upload({
+      signer: account,
+      blobData,
+      blobName: `price-predictions/${fileName}`,
+      expirationMicros: (Date.now() + 1000 * 60 * 60) * 1000, // 1 hour storage expiration
+    });
+    console.log("🎉 Successfully uploaded onto Shelby's Decentralized Storage infrastructure!");
+  } catch (err: any) {
+    console.error("Upload failed:", err.message);
+  }
   
-  console.log("Chương trình chạy hoàn tất. \nHãy cung cấp API KEY và mở phần upload code để đưa cục dữ liệu JSON này vĩnh viễn (hoặc theo kỳ hạn) lên Shelby Protocol nhé!");
+  console.log("Execution completed.");
 }
 
 main().catch(console.error);
